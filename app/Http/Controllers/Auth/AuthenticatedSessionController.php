@@ -28,6 +28,8 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        // Rute 'dashboard' di sini akan memicu DashboardController@index
+        // yang akan mengarahkan user sesuai role-nya.
         return redirect()->intended(route('dashboard', absolute: false));
     }
 

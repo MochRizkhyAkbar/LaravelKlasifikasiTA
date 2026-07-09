@@ -1,20 +1,55 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\MasyarakatController;
+use App\Http\Controllers\AdminDinasController;
+use App\Http\Controllers\AdminBidangController;
+use App\Http\Controllers\DashboardController;
 
+// ==========================================
+// RUTE MASYARAKAT (Terbuka)
+// ==========================================
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('home');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/pengaduan/buat', [MasyarakatController::class, 'create'])->name('pengaduan.create');
+Route::post('/pengaduan/simpan', [MasyarakatController::class, 'store'])->name('pengaduan.store');
+Route::get('/pengaduan/cari', [MasyarakatController::class, 'search'])->name('pengaduan.search');
 
-Route::middleware('auth')->group(function () {
+// ==========================================
+// RUTE AUTHENTIKASI
+// ==========================================
+require __DIR__.'/auth.php';
+
+// ==========================================
+// RUTE DASHBOARD & ADMIN (Wajib Login)
+// ==========================================
+Route::middleware(['auth', 'verified'])->group(function () {
+
+    // Rute Pengalihan Dashboard berdasarkan Role
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // Rute Admin Dinas
+    Route::prefix('admin-dinas')->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'dinas'])->name('admin.dinas.dashboard');
+        Route::get('/kelola', [AdminDinasController::class, 'index'])->name('admin_dinas.kelola');
+        Route::get('/users', [AdminDinasController::class, 'manajemenUser'])->name('admin_dinas.users');
+
+        // Fitur Kelola Pengaduan
+        Route::get('/export-pdf', [AdminDinasController::class, 'exportPdf'])->name('admin_dinas.export.pdf');
+        Route::post('/update-status/{id}', [AdminDinasController::class, 'updateStatus'])->name('admin_dinas.update');
+    });
+
+    // Rute Admin Bidang
+    Route::prefix('admin-bidang')->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'bidang'])->name('admin.bidang.dashboard');
+        Route::get('/tindaklanjuti', [AdminBidangController::class, 'index'])->name('admin_bidang.tindaklanjuti');
+    });
+
+    // Rute Profil
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
-require __DIR__.'/auth.php';
