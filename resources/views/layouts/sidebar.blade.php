@@ -20,7 +20,7 @@
                    class="block py-3 px-6 transition border-l-4 {{ request()->routeIs('admin_dinas.kelola') ? 'bg-blue-800 border-yellow-400 text-white font-bold' : 'border-transparent hover:bg-blue-800 hover:border-blue-700' }}">
                    Kelola Pengaduan
                 </a>
-                <a href="{{ route('admin_dinas.users') }}"
+                <a href="{{ route('admin.manajemen.user') }}"
                    class="block py-3 px-6 transition border-l-4 {{ request()->routeIs('admin_dinas.users') ? 'bg-blue-800 border-yellow-400 text-white font-bold' : 'border-transparent hover:bg-blue-800 hover:border-blue-700' }}">
                    Manajemen User
                 </a>

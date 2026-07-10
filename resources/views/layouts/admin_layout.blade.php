@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Admin - PUTR CIANJUR</title>
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
 
     <style>
         /* Memastikan scroll hanya terjadi di area konten, bukan seluruh halaman */
@@ -12,6 +15,7 @@
             height: 100vh;
             margin: 0;
             padding: 0;
+            overflow: hidden; /* Mencegah scroll pada body */
         }
     </style>
 
@@ -26,6 +30,9 @@
             @yield('content')
         </main>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
 
     @stack('scripts')
 </body>

@@ -35,7 +35,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="mb-8">
             <h1 class="text-3xl font-extrabold text-blue-900 tracking-tight">Kelola Pengaduan</h1>
-            <p class="text-gray-500 mt-2">Daftar pengaduan yang telah terklasifikasi oleh sistem untuk diverifikasi.</p>
+            <p class=" text-gray-500 mt-2">Daftar pengaduan yang telah terklasifikasi oleh sistem untuk diverifikasi.</p>
         </div>
 
         <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6 flex justify-end items-center gap-3">

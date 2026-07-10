@@ -6,6 +6,7 @@ use App\Http\Controllers\MasyarakatController;
 use App\Http\Controllers\AdminDinasController;
 use App\Http\Controllers\AdminBidangController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ManajemenUserController;
 
 // ==========================================
 // RUTE MASYARAKAT (Terbuka)
@@ -24,18 +25,26 @@ Route::get('/pengaduan/cari', [MasyarakatController::class, 'search'])->name('pe
 require __DIR__.'/auth.php';
 
 // ==========================================
-// RUTE DASHBOARD & ADMIN (Wajib Login)
+// RUTE DASHBOARD & ADMIN (Wajib Login & Wajib Aktif)
 // ==========================================
-Route::middleware(['auth', 'verified'])->group(function () {
+// Menambahkan 'checkStatus' ke dalam middleware group agar akun Non-Aktif otomatis logout
+Route::middleware(['auth', 'verified', 'checkStatus'])->group(function () {
 
     // Rute Pengalihan Dashboard berdasarkan Role
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Rute Admin Dinas
-    Route::prefix('admin-dinas')->group(function () {
+    Route::middleware(['role:admin'])->prefix('admin-dinas')->group(function (){
         Route::get('/dashboard', [DashboardController::class, 'dinas'])->name('admin.dinas.dashboard');
         Route::get('/kelola', [AdminDinasController::class, 'index'])->name('admin_dinas.kelola');
-        Route::get('/users', [AdminDinasController::class, 'manajemenUser'])->name('admin_dinas.users');
+
+        // Rute Manajemen User
+        Route::get('/users', [ManajemenUserController::class, 'index'])->name('admin.manajemen.user');
+
+        // Rute CRUD User
+        Route::post('/users/store', [ManajemenUserController::class, 'store'])->name('admin.user.store');
+        Route::put('/users/update/{id}', [ManajemenUserController::class, 'update'])->name('admin.user.update');
+        Route::delete('/users/delete/{id}', [ManajemenUserController::class, 'destroy'])->name('admin.user.destroy');
 
         // Fitur Kelola Pengaduan
         Route::get('/export-pdf', [AdminDinasController::class, 'exportPdf'])->name('admin_dinas.export.pdf');

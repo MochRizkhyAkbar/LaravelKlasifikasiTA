@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Illuminate\Validation\ValidationException; // Tambahkan ini
 
 class AuthenticatedSessionController extends Controller
 {
@@ -24,12 +25,22 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
+        // 1. Authenticate user
         $request->authenticate();
 
+        // 2. CEK STATUS USER
+        if (Auth::user()->status === 'Non-Aktif') {
+            Auth::logout(); // Logout paksa
+
+            // Lempar error agar user tahu kenapa mereka tidak bisa login
+            throw ValidationException::withMessages([
+                'email' => 'Akun Anda telah dinonaktifkan. Silakan hubungi Admin.',
+            ]);
+        }
+
+        // 3. Regenerate session jika sukses
         $request->session()->regenerate();
 
-        // Rute 'dashboard' di sini akan memicu DashboardController@index
-        // yang akan mengarahkan user sesuai role-nya.
         return redirect()->intended(route('dashboard', absolute: false));
     }
 
