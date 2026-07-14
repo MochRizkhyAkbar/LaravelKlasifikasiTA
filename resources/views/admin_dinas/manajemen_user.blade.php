@@ -1,16 +1,50 @@
 @extends('layouts.admin_layout')
 
 @section('content')
-<div class="p-6" x-data="{ openModal: false, openEditModal: 0 }">
-    <div class="flex justify-between items-center mb-6">
-        <div>
-            <h1 class="text-3xl font-extrabold text-blue-900">Manajemen User</h1>
-            <p class="text-gray-500">Kelola akun petugas dinas dan akses sistem.</p>
+    <div class="p-6" x-data="{ openModal: false, openEditModal: 0 }">
+        <div class="mb-6">
+        <h1 class="text-3xl font-extrabold text-blue-900">Manajemen User</h1>
+        <p class="text-gray-500">Kelola akun petugas dinas dan akses sistem.</p>
+    </div>
+
+    <div class="flex flex-col sm:flex-row justify-between items-center mb-4 p-4 bg-gray-50 rounded-xl border border-gray-100 shadow-sm">
+
+        <div class="text-sm text-gray-600 font-medium">
+            Menampilkan
+            <span class="mx-1 px-3 py-0.5 bg-blue-50 text-blue-700 border border-blue-100 rounded-full font-bold shadow-sm">
+                {{ $users->count() }}
+            </span>
+            data
         </div>
-        <button @click="openModal = true" class="bg-blue-900 hover:bg-blue-800 text-white font-bold py-2 px-6 rounded-lg shadow-md transition">
-            + Tambah User Baru
+
+        <button @click="openModal = true"
+                class="flex items-center gap-2 bg-blue-900 hover:bg-blue-800 text-white px-5 py-2 rounded-lg font-bold text-sm shadow-md transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            Tambah User Baru
         </button>
     </div>
+
+      @push('scripts')
+            <script src="{{ asset('js/sweetalert2.all.min.js') }}"></script>
+
+            @if (session('success'))
+                <script>
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil',
+                        text: '{{ session('success') }}',
+                        toast: true,
+                        position: 'top',
+                        showConfirmButton: false,
+                        timer: 4000,
+                        timerProgressBar: true,
+                        color: '#166534'
+                    });
+                </script>
+            @endif
+        @endpush
 
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
         <table id="tabelUser" class="w-full text-left text-sm display nowrap">
@@ -43,11 +77,19 @@
                         </span>
                     </td>
                     <td class="px-6 py-4 text-center">
-                        <div class="flex justify-center gap-2">
-                            <button @click="openEditModal = {{ $user->id }}" class="text-blue-600 hover:text-blue-800 font-semibold">Edit</button>
-                            <form action="{{ route('admin.user.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus?')">
+                       <div class="flex justify-center gap-2">
+                            <button @click="openEditModal = {{ $user->id }}"
+                                    class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded text-xs transition">
+                                Edit
+                            </button>
+
+                            <form action="{{ route('admin.user.destroy', $user->id) }}" method="POST"
+                                onsubmit="return confirm('Yakin ingin menghapus?')">
                                 @csrf @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:text-red-800 font-semibold">Hapus</button>
+                                <button type="submit"
+                                        class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded text-xs transition">
+                                    Hapus
+                                </button>
                             </form>
                         </div>
                     </td>

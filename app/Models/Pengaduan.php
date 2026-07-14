@@ -17,7 +17,8 @@ class Pengaduan extends Model
         'confidence_score', // Tambahan: Simpan nilai akurasi klasifikasi
         'status',
         'alasan_penolakan',
-        'user_id'           // Tambahan: Relasi jika pengaduan ditangani oleh admin tertentu
+        'user_id',           // Tambahan: Relasi jika pengaduan ditangani oleh admin tertentu
+        'catatan_bidang'
     ];
 
     /**
@@ -31,5 +32,18 @@ class Pengaduan extends Model
     public function petugas()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function getStatusMasyarakatAttribute() {
+        return match($this->status) {
+            'Pending' => 'Sedang diverifikasi oleh Admin',
+            'Diterima', 'Didisposisikan', 'Diproses' => 'Sedang ditindaklanjuti oleh bidang terkait',
+            'Selesai' => 'Laporan telah selesai ditangani',
+            'Dikembalikan', 'Ditolak' => 'Laporan ditolak atau perlu informasi tambahan',
+            default => 'Sedang diproses',
+        };
+    }
+    public function user() {
+        return $this->belongsTo(User::class, 'user_id'); // Sesuaikan dengan foreign key Anda
     }
 }

@@ -14,7 +14,7 @@ class ManajemenUserController extends Controller
     public function index()
     {
         // Memuat data user beserta relasi role-nya
-        $users = User::with('roles')->get();
+        $users = \App\Models\User::with('roles')->get();
         return view('admin_dinas.manajemen_user', compact('users'));
     }
 

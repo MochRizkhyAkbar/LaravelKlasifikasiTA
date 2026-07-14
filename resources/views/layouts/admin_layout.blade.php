@@ -10,12 +10,12 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
 
     <style>
-        /* Memastikan scroll hanya terjadi di area konten, bukan seluruh halaman */
+        /* Mencegah scroll pada body utama */
         body {
             height: 100vh;
             margin: 0;
             padding: 0;
-            overflow: hidden; /* Mencegah scroll pada body */
+            overflow: hidden;
         }
     </style>
 

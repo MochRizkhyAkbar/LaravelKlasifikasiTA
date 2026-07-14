@@ -65,8 +65,8 @@
     const dataTahunKeys = {!! json_encode($grafikPerTahun->keys()) !!};
     const dataTahunValues = {!! json_encode($grafikPerTahun->values()) !!};
 
-    const dataBulanValues = {!! json_encode(array_values(array_replace(array_fill(1, 12, 0), $grafikPerBulan->toArray()))) !!};
-
+    // Tambahkan ->toArray() sebelum diolah oleh fungsi PHP
+    const dataBulanValues = {!! json_encode(array_values(array_replace(array_fill(0, 12, 0), $grafikPerBulan->mapWithKeys(fn($item, $key) => [(int)$key - 1 => $item])->toArray()))) !!};
     const dataHariKeys = {!! json_encode($grafikPerHari->keys()) !!};
     const dataHariValues = {!! json_encode($grafikPerHari->values()) !!};
 

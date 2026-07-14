@@ -8,7 +8,6 @@
 </head>
 <body class="bg-gray-50 text-gray-800">
 
-    <!-- Navbar Sticky -->
     <nav class="sticky top-0 z-50 flex justify-between items-center p-6 bg-white shadow-sm border-b-2 border-blue-900">
         <a href="{{ route('home') }}">
             <img src="{{ asset('images/Logo PUTR.png') }}" alt="Logo PUTR" class="h-12 w-auto">
@@ -20,7 +19,6 @@
         </div>
     </nav>
 
-    <!-- Main Content -->
     <main class="max-w-lg mx-auto py-16 px-6">
         <div class="bg-white p-8 rounded-xl shadow-lg border-t-4 border-blue-900">
             <h2 class="text-2xl font-bold mb-6 text-blue-900">Cari Status Pengaduan</h2>
@@ -52,14 +50,16 @@
                     <div>
                         <p class="text-sm text-gray-500 font-medium">Status:</p>
                         <span class="inline-block px-4 py-1.5 rounded-full text-sm font-bold mt-1
-                            {{ $pengaduan->status == 'Pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800' }}">
+                            {{ $pengaduan->status == 'Pending' ? 'bg-yellow-100 text-yellow-800' :
+                               ($pengaduan->status == 'Diterima' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800') }}">
                             {{ $pengaduan->status }}
                         </span>
                     </div>
 
-                    @if($pengaduan->status == 'Ditolak')
-                        <div class="p-4 bg-red-50 text-red-700 rounded-lg text-sm border border-red-100">
-                            <strong>Alasan Penolakan:</strong> {{ $pengaduan->alasan_penolakan }}
+                    @if($pengaduan->status == 'Ditolak' && !empty($pengaduan->alasan_penolakan))
+                        <div class="p-4 bg-red-50 text-red-700 rounded-lg text-sm border border-red-200">
+                            <strong>Alasan Penolakan:</strong>
+                            <p class="mt-1">{{ $pengaduan->alasan_penolakan }}</p>
                         </div>
                     @endif
                 </div>

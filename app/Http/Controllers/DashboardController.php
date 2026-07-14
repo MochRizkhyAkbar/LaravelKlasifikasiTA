@@ -72,6 +72,7 @@ class DashboardController extends Controller
         if (!$this->isBidangAdmin(Auth::user())) {
             abort(403, 'Akses ditolak.');
         }
+
         return view('admin_bidang.dashboard');
     }
 

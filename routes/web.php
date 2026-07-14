@@ -27,10 +27,8 @@ require __DIR__.'/auth.php';
 // ==========================================
 // RUTE DASHBOARD & ADMIN (Wajib Login & Wajib Aktif)
 // ==========================================
-// Menambahkan 'checkStatus' ke dalam middleware group agar akun Non-Aktif otomatis logout
 Route::middleware(['auth', 'verified', 'checkStatus'])->group(function () {
 
-    // Rute Pengalihan Dashboard berdasarkan Role
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Rute Admin Dinas
@@ -40,21 +38,22 @@ Route::middleware(['auth', 'verified', 'checkStatus'])->group(function () {
 
         // Rute Manajemen User
         Route::get('/users', [ManajemenUserController::class, 'index'])->name('admin.manajemen.user');
-
-        // Rute CRUD User
         Route::post('/users/store', [ManajemenUserController::class, 'store'])->name('admin.user.store');
         Route::put('/users/update/{id}', [ManajemenUserController::class, 'update'])->name('admin.user.update');
         Route::delete('/users/delete/{id}', [ManajemenUserController::class, 'destroy'])->name('admin.user.destroy');
 
         // Fitur Kelola Pengaduan
         Route::get('/export-pdf', [AdminDinasController::class, 'exportPdf'])->name('admin_dinas.export.pdf');
-        Route::post('/update-status/{id}', [AdminDinasController::class, 'updateStatus'])->name('admin_dinas.update');
+        Route::put('/update-status/{id}', [AdminDinasController::class, 'updateStatus'])->name('admin_dinas.update');
     });
 
     // Rute Admin Bidang
     Route::prefix('admin-bidang')->group(function () {
-        Route::get('/dashboard', [DashboardController::class, 'bidang'])->name('admin.bidang.dashboard');
+        Route::get('/dashboard', [AdminBidangController::class, 'dashboard'])->name('admin.bidang.dashboard');
         Route::get('/tindaklanjuti', [AdminBidangController::class, 'index'])->name('admin_bidang.tindaklanjuti');
+
+        // Rute untuk update status/disposisi oleh Admin Bidang
+        Route::put('/update/{id}', [AdminBidangController::class, 'update'])->name('admin_bidang.update');
     });
 
     // Rute Profil

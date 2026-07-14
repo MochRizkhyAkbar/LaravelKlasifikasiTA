@@ -12,12 +12,10 @@ class MasyarakatController extends Controller
         return view('masyarakat.input_pengaduan');
     }
 
-    // Fungsi search yang diperbarui untuk mencari data
     public function search(Request $request)
     {
         $pengaduan = null;
 
-        // Cek apakah ada input 'kode' dari form pencarian
         if ($request->has('kode') && $request->kode != '') {
             $pengaduan = Pengaduan::where('kode_pengaduan', $request->kode)->first();
 
@@ -31,7 +29,6 @@ class MasyarakatController extends Controller
 
     public function store(Request $request)
     {
-        // 1. Validasi input
         $request->validate([
             'nama_pelapor' => 'required|string|max:255',
             'no_wa'        => 'required|string|max:15',
@@ -40,17 +37,15 @@ class MasyarakatController extends Controller
             'foto_bukti'   => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        // 2. Membuat Kode Unik
         $kode = 'PGD-' . substr(time(), -6);
 
-        // 3. Simpan data ke database
         $pengaduan = new Pengaduan();
         $pengaduan->nama_pelapor  = $request->nama_pelapor;
         $pengaduan->no_wa         = $request->no_wa;
         $pengaduan->isi_pengaduan = $request->isi_pengaduan;
         $pengaduan->lokasi        = $request->lokasi;
         $pengaduan->kode_pengaduan = $kode;
-        $pengaduan->status        = 'Pending'; // Default status
+        $pengaduan->status        = 'Pending';
 
         if ($request->hasFile('foto_bukti')) {
             $path = $request->file('foto_bukti')->store('bukti', 'public');
@@ -59,8 +54,7 @@ class MasyarakatController extends Controller
 
         $pengaduan->save();
 
-        // 4. Redirect kembali ke halaman form dengan pesan sukses
         return redirect()->route('pengaduan.create')
-                         ->with('success', 'Pengaduan berhasil dikirim! Silakan simpan kode ini untuk melacak laporan Anda: <strong>' . $kode . '</strong>');
+                         ->with('success', 'Pengaduan berhasil dikirim! Kode: <strong>' . $kode . '</strong>');
     }
 }
