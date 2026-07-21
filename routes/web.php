@@ -33,7 +33,7 @@ Route::middleware(['auth', 'verified', 'checkStatus'])->group(function () {
 
     // Rute Admin Dinas
     Route::middleware(['role:admin'])->prefix('admin-dinas')->group(function (){
-        Route::get('/dashboard', [DashboardController::class, 'dinas'])->name('admin.dinas.dashboard');
+       Route::get('/dashboard', [App\Http\Controllers\AdminDinasController::class, 'dashboard'])->name('admin.dinas.dashboard');
         Route::get('/kelola', [AdminDinasController::class, 'index'])->name('admin_dinas.kelola');
 
         // Rute Manajemen User
@@ -56,8 +56,9 @@ Route::middleware(['auth', 'verified', 'checkStatus'])->group(function () {
         Route::put('/update/{id}', [AdminBidangController::class, 'update'])->name('admin_bidang.update');
     });
 
-    // Rute Profil
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::middleware('auth')->group(function () {
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    });
 });

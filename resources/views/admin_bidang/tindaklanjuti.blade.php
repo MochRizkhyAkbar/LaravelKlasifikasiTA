@@ -1,9 +1,5 @@
 @extends('layouts.admin_layout')
 
-@push('styles')
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
-@endpush
-
 @section('content')
 <div class="max-w-7xl mx-auto py-8 px-4">
     <h1 class="text-2xl font-bold mb-1">Formulir Menindaklanjuti Pengaduan</h1>
@@ -101,8 +97,7 @@
 @endsection
 
 @push('scripts')
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
+
 <script>
     $(document).ready(function() {
         $('#tabelTindakLanjut').DataTable({

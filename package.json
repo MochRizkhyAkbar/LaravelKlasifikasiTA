@@ -18,7 +18,9 @@
         "vite": "^8.0.0"
     },
     "dependencies": {
+        "chart.js": "^4.5.1",
         "datatables.net-dt": "^2.3.8",
-        "jquery": "^4.0.0"
+        "jquery": "^4.0.0",
+        "sweetalert2": "^11.26.25"
     }
 }

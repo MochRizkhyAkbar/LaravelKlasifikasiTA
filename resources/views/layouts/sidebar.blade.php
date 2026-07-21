@@ -12,24 +12,30 @@
 
             <a href="{{ route($dashboardRoute) }}"
                class="block py-3 px-6 transition border-l-4 {{ request()->routeIs($dashboardRoute) ? 'bg-blue-800 border-yellow-400 text-white font-bold' : 'border-transparent hover:bg-blue-800 hover:border-blue-700' }}">
-               Dashboard
+                Dashboard
             </a>
 
             @if(auth()->user()->hasRole('admin'))
                 <a href="{{ route('admin_dinas.kelola') }}"
                    class="block py-3 px-6 transition border-l-4 {{ request()->routeIs('admin_dinas.kelola') ? 'bg-blue-800 border-yellow-400 text-white font-bold' : 'border-transparent hover:bg-blue-800 hover:border-blue-700' }}">
-                   Kelola Pengaduan
+                    Kelola Pengaduan
                 </a>
                 <a href="{{ route('admin.manajemen.user') }}"
-                   class="block py-3 px-6 transition border-l-4 {{ request()->routeIs('admin_dinas.users') ? 'bg-blue-800 border-yellow-400 text-white font-bold' : 'border-transparent hover:bg-blue-800 hover:border-blue-700' }}">
-                   Manajemen User
+                   class="block py-3 px-6 transition border-l-4 {{ request()->routeIs('admin.manajemen.user') ? 'bg-blue-800 border-yellow-400 text-white font-bold' : 'border-transparent hover:bg-blue-800 hover:border-blue-700' }}">
+                    Manajemen User
                 </a>
             @else
                 <a href="{{ route('admin_bidang.tindaklanjuti') }}"
                    class="block py-3 px-6 transition border-l-4 {{ request()->routeIs('admin_bidang.tindaklanjuti') ? 'bg-blue-800 border-yellow-400 text-white font-bold' : 'border-transparent hover:bg-blue-800 hover:border-blue-700' }}">
-                   Tindaklanjuti
+                    Tindaklanjuti
                 </a>
             @endif
+
+            <!-- Tautan Profil untuk semua user -->
+            <a href="{{ route('profile.edit') }}"
+               class="block py-3 px-6 transition border-l-4 {{ request()->routeIs('profile.edit') ? 'bg-blue-800 border-yellow-400 text-white font-bold' : 'border-transparent hover:bg-blue-800 hover:border-blue-700' }}">
+                Profil Saya
+            </a>
         </nav>
 
         <div class="p-6 border-t border-blue-800">

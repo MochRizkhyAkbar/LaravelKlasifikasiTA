@@ -20,22 +20,24 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <main class="text-center py-20 px-6">
-        <h1 class="text-5xl font-extrabold text-blue-900 mb-6">Sampaikan Keluhan Infrastruktur Anda Secara Langsung</h1>
-        <p class="text-lg text-gray-600 mb-10 max-w-2xl mx-auto">Sistem Informasi Pengaduan Dinas Pekerjaan Umum dan Tata Ruang Kabupaten Cianjur</p>
-        <a href="{{ route('pengaduan.create') }}" class="inline-block bg-blue-900 text-white px-10 py-4 rounded-lg hover:bg-blue-800 font-bold shadow-lg transition-transform hover:scale-105">
-            Buat Pengaduan Sekarang
-        </a>
-    </main>
+    <!-- Hero Section dengan Foto Latar -->
+    <header class="relative py-24 px-6 bg-cover bg-center" style="background-image: linear-gradient(rgba(17, 24, 39, 0.7), rgba(17, 24, 39, 0.7)), url('{{ asset('images/PUPR.jpg') }}');">
+        <div class="max-w-4xl mx-auto text-center text-white">
+            <h1 class="text-4xl md:text-5xl font-extrabold mb-6">Sampaikan Keluhan Infrastruktur Anda Secara Langsung</h1>
+            <p class="text-lg mb-10 max-w-2xl mx-auto opacity-90">Sistem Informasi Pengaduan Dinas Pekerjaan Umum dan Tata Ruang Kabupaten Cianjur</p>
+            <a href="{{ route('pengaduan.create') }}" class="inline-block bg-blue-600 text-white px-10 py-4 rounded-lg hover:bg-blue-700 font-bold shadow-lg transition-transform hover:scale-105">
+                Buat Pengaduan Sekarang
+            </a>
+        </div>
+    </header>
 
     <!-- Garis Pemisah yang Elegan -->
-    <div class="max-w-4xl mx-auto px-6">
+    <div class="max-w-4xl mx-auto px-6 py-6">
         <div class="h-px bg-gradient-to-r from-transparent via-blue-900 to-transparent w-full"></div>
     </div>
 
     <!-- Info Section: Tutorial & Bidang -->
-    <section class="max-w-6xl mx-auto py-16 px-6 grid md:grid-cols-2 gap-12">
+    <section class="max-w-6xl mx-auto py-10 px-6 grid md:grid-cols-2 gap-12">
         <!-- Tutorial -->
         <div>
             <h2 class="text-2xl font-bold text-blue-900 mb-6">Cara Melakukan Pengaduan</h2>
@@ -62,17 +64,14 @@
         </div>
     </section>
 
-    <!-- Footer & Alamat (Klik untuk Maps) -->
+    <!-- Footer & Alamat -->
     <footer class="bg-blue-900 text-white py-12 px-6 mt-10">
         <div class="max-w-4xl mx-auto text-center">
             <h3 class="font-bold text-lg mb-2">Alamat Dinas PUTR Kabupaten Cianjur</h3>
-            <!-- Link Google Maps -->
             <a href="https://www.google.com/maps/search/Dinas+PUTR+Kabupaten+Cianjur" target="_blank" class="text-blue-100 hover:text-white underline transition">
                 Jl. Adi Sucipta, Pamoyanan, Kec. Cianjur, Kabupaten Cianjur, Jawa Barat 43212
             </a>
-            <p class="text-sm text-blue-300 mt-8">&copy; {{ date('Y') }} Dinas PUTR Kabupaten Cianjur |
-                <a href="{{ route('login') }}" class="hover:underline text-white">Login Admin</a>
-            </p>
+            <p class="text-sm text-blue-300 mt-8">&copy; {{ date('Y') }} Dinas PUTR Kabupaten Cianjur</p>
         </div>
     </footer>
 

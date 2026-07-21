@@ -6,7 +6,8 @@
     <title>Buat Pengaduan - PUTR Cianjur</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <!-- Library untuk Simpan Gambar -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script> --}}
+    <script src="{{ asset('js/html2canvas.min.js') }}"></script>
 </head>
 <body class="bg-gray-50 text-gray-800">
 
@@ -25,6 +26,27 @@
     <!-- Main Content -->
     <main class="max-w-4xl mx-auto py-10 px-6">
 
+
+            <script src="{{ asset('js/sweetalert2.all.min.js') }}"></script>
+
+            @if (session('error'))
+            <script>
+                console.log('test');
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Koneksi ke server AI terputus',
+                            text: 'error',
+                            toast: true,
+                            position: 'top',
+                            showConfirmButton: false,
+                            timer: 4000,
+                            timerProgressBar: true,
+                            color: '#166534'
+                        });
+            </script>
+             @endif
+
+
         <!-- Kalimat Ajakan -->
         <div class="mb-8 text-center">
             <h2 class="text-3xl font-bold text-blue-900 mb-2">Laporkan Kerusakan Infrastruktur</h2>
@@ -35,25 +57,30 @@
             <form action="{{ route('pengaduan.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {{-- Nama Lengkap --}}
                     <div>
-                        <label class="block font-semibold mb-2">Nama Lengkap</label>
-                        <input type="text" name="nama_pelapor" class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500" required>
+                        <label class="block font-semibold mb-2">Nama Lengkap <span class="text-red-500"></span></label>
+                        <input type="text" name="nama_pelapor" placeholder="Masukkan nama lengkap anda" class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500" required>
                     </div>
+                    {{-- No WhatsApp --}}
                     <div>
-                        <label class="block font-semibold mb-2">No WhatsApp</label>
-                        <input type="text" name="no_wa" class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500" required>
+                        <label class="block font-semibold mb-2">No WhatsApp <span class="text-red-500"></span></label>
+                        <input type="text" name="no_wa" placeholder="Masukkan nomor WhatsApp anda" class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500" required>
                     </div>
+                    {{-- Isi Laporan --}}
                     <div class="md:col-span-2">
-                        <label class="block font-semibold mb-2">Isi Laporan Pengaduan</label>
-                        <textarea name="isi_pengaduan" rows="4" class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500" required></textarea>
+                        <label class="block font-semibold mb-2">Isi Laporan Pengaduan <span class="text-red-500"></span></label>
+                        <textarea name="isi_pengaduan" rows="4" placeholder="Jelaskan detail kerusakan infrastruktur di sini..." class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500" required></textarea>
                     </div>
+                    {{-- Foto Bukti --}}
                     <div>
                         <label class="block font-semibold mb-2">Foto Bukti Fisik</label>
                         <input type="file" name="foto_bukti" class="w-full border rounded-lg p-3 bg-gray-50">
                     </div>
+                    {{-- Lokasi --}}
                     <div>
-                        <label class="block font-semibold mb-2">Lokasi</label>
-                        <input type="text" name="lokasi" class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500" required>
+                        <label class="block font-semibold mb-2">Lokasi <span class="text-red-500"></span></label>
+                        <input type="text" name="lokasi" placeholder="Masukkan lokasi detail kerusakan" class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500" required>
                     </div>
                 </div>
                 <div class="mt-8 text-right">

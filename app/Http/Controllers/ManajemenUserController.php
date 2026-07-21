@@ -13,8 +13,8 @@ class ManajemenUserController extends Controller
      */
     public function index()
     {
-        // Memuat data user beserta relasi role-nya
-        $users = \App\Models\User::with('roles')->get();
+        // Pastikan relasi 'roles' didefinisikan dengan benar di Model User
+        $users = User::with('roles')->get();
         return view('admin_dinas.manajemen_user', compact('users'));
     }
 
@@ -23,23 +23,29 @@ class ManajemenUserController extends Controller
      */
     public function store(Request $request)
     {
+        // 1. Validasi
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email',
+            // 'password' => 'required|min:6',
             'role' => 'required',
             'status' => 'required',
         ]);
+        // dd($request);
 
+        // 2. Simpan ke database
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'password' => Hash::make('Pass123'),
+            // 'password' => Hash::make($request->password), // Gunakan Hash::make agar lebih standar
             'status' => $request->status,
         ]);
 
+        // 3. Assign role via Spatie
         $user->assignRole($request->role);
 
+        // Pastikan nama route ini sesuai dengan yang ada di routes/web.php Anda
         return redirect()->route('admin.manajemen.user')->with('success', 'User berhasil ditambahkan!');
     }
 
@@ -50,23 +56,21 @@ class ManajemenUserController extends Controller
     {
         $user = User::findOrFail($id);
 
-        // Menggunakan flag 'update_type' untuk membedakan aksi
-        // Jika request berisi 'update_type' bernilai 'status_only', maka hanya update status
         if ($request->input('update_type') === 'status_only') {
             $user->update(['status' => $request->status]);
         } else {
-            // Update profil lengkap
             $request->validate([
                 'name' => 'required|string|max:255',
                 'email' => 'required|email|unique:users,email,' . $id,
                 'role' => 'required',
                 'status' => 'required',
-                'password' => 'nullable|string|min:8',
+                'password' => 'nullable|string|min:6',
             ]);
 
             $data = [
                 'name' => $request->name,
                 'email' => $request->email,
+                'role' => $request->role,
                 'status' => $request->status,
             ];
 

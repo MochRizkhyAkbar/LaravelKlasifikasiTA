@@ -146,8 +146,9 @@
                 @csrf
                 <input type="text" name="name" placeholder="Nama" class="w-full border p-2 mb-2 rounded" required>
                 <input type="email" name="email" placeholder="Email" class="w-full border p-2 mb-2 rounded" required>
-                <input type="password" name="password" placeholder="Password" class="w-full border p-2 mb-2 rounded" required>
-
+                @error('email')<div class="text-red-400 text-xs mt-1">{{ $message }}</div>@enderror
+                {{-- <input type="password" name="password" placeholder="Password" class="w-full border p-2 mb-2 rounded" required> --}}
+                @error('password')<div class="text-red-400 text-xs mt-1">{{ $message }}</div>@enderror
                 <label class="block text-sm font-semibold mt-2">Pilih Role:</label>
                 <select name="role" class="w-full border p-2 mb-2 rounded" required>
                     <option value="admin">Admin Dinas</option>

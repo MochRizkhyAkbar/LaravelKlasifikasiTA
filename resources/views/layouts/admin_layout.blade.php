@@ -7,10 +7,8 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
-
     <style>
-        /* Mencegah scroll pada body utama */
+        /* Mencegah scroll pada body utama agar sidebar tetap stabil */
         body {
             height: 100vh;
             margin: 0;
@@ -30,9 +28,6 @@
             @yield('content')
         </main>
     </div>
-
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
 
     @stack('scripts')
 </body>

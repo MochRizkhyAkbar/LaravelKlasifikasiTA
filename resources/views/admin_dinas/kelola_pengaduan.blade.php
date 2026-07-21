@@ -1,12 +1,5 @@
 @extends('layouts.admin_layout')
 
-@push('styles')
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
-    <style>
-        .dt-search input { border: 1px solid #d1d5db !important; border-radius: 0.5rem !important; padding: 5px 10px !important; }
-    </style>
-@endpush
-
 @section('content')
 <div class="w-full">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -16,7 +9,6 @@
         </div>
 
         <div class="bg-white p-4 rounded-xl shadow-sm mb-6 flex justify-between items-center gap-3">
-
             <div class="text-sm text-gray-600 font-medium">
                 Menampilkan
                 <span class="mx-1 px-3 py-0.5 bg-blue-50 text-blue-700 border border-blue-100 rounded-full font-bold shadow-sm">
@@ -40,26 +32,7 @@
                     Export PDF
                 </a>
             </div>
-            </div>
-
-        @push('scripts')
-            <script src="{{ asset('js/sweetalert2.all.min.js') }}"></script>
-
-            @if (session('success'))
-                <script>
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Berhasil',
-                        text: '{{ session('success') }}',
-                        toast: true,
-                        position: 'top',
-                        showConfirmButton: false,
-                        timer: 4000,
-                        timerProgressBar: true
-                    });
-                </script>
-            @endif
-        @endpush
+        </div>
 
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden p-6">
             <table id="tabelPengaduan" class="w-full text-left text-sm">
@@ -88,10 +61,8 @@
                             @if($item->status == 'Pending')
                                 <span class="text-yellow-600">Menunggu Verifikasi</span>
                             @elseif($item->status == 'Diterima')
-                                <!-- Ubah di sini: tambahkan str_replace -->
                                 <span class="text-blue-600">Diteruskan ke {{ str_replace('bidang', '', $item->kategori_ai) }}</span>
                             @elseif($item->status == 'Didisposisikan')
-                                <!-- Ubah juga di sini: tambahkan str_replace -->
                                 <span class="text-orange-600">Dialihkan ke {{ str_replace('bidang', '', $item->kategori_ai) }}</span>
                             @elseif($item->status == 'Dikembalikan')
                                 <span class="text-red-600 cursor-help" title="{{ $item->catatan_bidang }}">Dikembalikan (Perlu Review)</span>
@@ -113,6 +84,7 @@
     </div>
 </div>
 
+{{-- Modals --}}
 <div id="verifModal" class="fixed inset-0 bg-black bg-opacity-40 hidden flex items-center justify-center p-4 z-50">
     <div class="bg-white p-6 rounded-2xl w-full max-w-sm">
         <h2 class="text-lg font-bold mb-4">Verifikasi Pengaduan</h2>
@@ -140,14 +112,20 @@
         <button onclick="document.getElementById('detailModal').classList.add('hidden')" class="mt-6 w-full bg-blue-900 text-white py-3 rounded-xl font-bold">Tutup</button>
     </div>
 </div>
+@endsection
+
+@push('styles')
+<style>
+    /* Styling khusus search box DataTables agar sesuai tema */
+    .dt-search input { border: 1px solid #d1d5db !important; border-radius: 0.5rem !important; padding: 5px 10px !important; }
+</style>
+@endpush
 
 @push('scripts')
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
 <script>
     $(document).ready(function() {
         $('#tabelPengaduan').DataTable({
-            "order": [] // Ini memberi tahu DataTable untuk menggunakan urutan default dari HTML (hasil dari Controller)
+            "order": [] // Menggunakan urutan dari Controller
         });
     });
 
@@ -177,4 +155,3 @@
     }
 </script>
 @endpush
-@endsection
