@@ -37,7 +37,7 @@ class ManajemenUserController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make('Pass123'),
+            'password' => Hash::make('Pass1234'),
             // 'password' => Hash::make($request->password), // Gunakan Hash::make agar lebih standar
             'status' => $request->status,
         ]);
@@ -64,7 +64,7 @@ class ManajemenUserController extends Controller
                 'email' => 'required|email|unique:users,email,' . $id,
                 'role' => 'required',
                 'status' => 'required',
-                'password' => 'nullable|string|min:6',
+                'password' => 'nullable|string|min:8',
             ]);
 
             $data = [

@@ -21,7 +21,7 @@
                 <th>Aduan</th>
                 <th>Lokasi</th>
                 <th>Kategori (Sistem)</th>
-                <th>Confidence (%)</th>
+                {{-- <th>Confidence (%)</th> --}}
                 <th>Status</th>
             </tr>
         </thead>
@@ -34,7 +34,7 @@
                 <td>{{ $item->isi_pengaduan }}</td>
                 <td>{{ $item->lokasi }}</td>
                 <td>{{ $item->kategori_ai }}</td>
-                <td>{{ $item->confidence_score }}%</td>
+                {{-- <td>{{ $item->confidence_score }}%</td> --}}
                 <td>{{ $item->status }}</td>
             </tr>
             @endforeach

@@ -66,7 +66,7 @@ $(document).ready(function () {
         $('#tabelPengaduan').DataTable({
             responsive: true,
             pageLength: 10,
-            lengthChange: false,
+            lengthChange: true,
             order: [],
             columnDefs: [
                 {

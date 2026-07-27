@@ -43,7 +43,7 @@
                         <th class="px-6 py-4">NAMA</th>
                         <th class="px-6 py-4">ADUAN</th>
                         <th class="px-6 py-4">KATEGORI</th>
-                        <th class="px-6 py-4">CONFIDENCE</th>
+                        {{-- <th class="px-6 py-4">CONFIDENCE</th> --}}
                         <th class="px-6 py-4 text-center">STATUS</th>
                         <th class="px-6 py-4 text-center">AKSI</th>
                     </tr>
@@ -56,7 +56,7 @@
                         <td class="px-6 py-4 font-medium">{{ $item->nama_pelapor }}</td>
                         <td class="px-6 py-4 text-gray-600">{{ Str::limit($item->isi_pengaduan, 20) }}</td>
                         <td class="px-6 py-4 text-xs font-semibold text-blue-800">{{ $item->kategori_ai ?? '-' }}</td>
-                        <td class="px-6 py-4 text-xs font-bold text-blue-700">{{ $item->confidence_score ?? '0' }}%</td>
+                        {{-- <td class="px-6 py-4 text-xs font-bold text-blue-700">{{ $item->confidence_score ?? '0' }}%</td> --}}
                         <td class="px-6 py-4 font-bold text-center">
                             @if($item->status == 'Pending')
                                 <span class="text-yellow-600">Menunggu Verifikasi</span>
@@ -73,7 +73,7 @@
                             @endif
                         </td>
                         <td class="px-6 py-4 text-center">
-                            <button onclick="openVerificationModal({{ $item->id }})" class="bg-blue-500 text-white text-xs px-3 py-1 rounded font-bold hover:bg-blue-700">Edit</button>
+                            <button onclick="openVerificationModal({{ $item->id }}, {{ json_encode($item->kategori_ai) }})" class="bg-blue-500 text-white text-xs px-3 py-1 rounded font-bold hover:bg-blue-700">Edit</button>
                             <button type="button" data-pengaduan="{{ json_encode($item) }}" onclick="showDetail(this)" class="bg-gray-500 text-white text-xs px-3 py-1 rounded font-bold hover:bg-orange-700 ml-1 transition duration-200">Detail</button>
                         </td>
                     </tr>
@@ -90,8 +90,8 @@
         <h2 class="text-lg font-bold mb-4">Verifikasi Pengaduan</h2>
         <form id="verifForm" action="" method="POST">
             @csrf @method('PUT')
-            <select name="status" class="w-full border rounded-lg p-2 mb-4" onchange="toggleAlasan(this.value)">
-                <option value="Diterima">Diterima</option>
+            <select name="status" id="statusSelect" class="w-full border rounded-lg p-2 mb-4" onchange="toggleAlasan(this.value)">
+                <option value="Diterima" id="optionDiterima">Diterima</option>
                 <option value="Ditolak">Ditolak</option>
             </select>
             <div id="alasanDiv" class="hidden">
@@ -129,9 +129,36 @@
         });
     });
 
-    function openVerificationModal(id) {
+    function openVerificationModal(id, kategori) {
         const url = "{{ route('admin_dinas.update', ':id') }}".replace(':id', id);
         document.getElementById('verifForm').action = url;
+
+        const statusSelect = document.getElementById('statusSelect');
+        const optionDiterima = document.getElementById('optionDiterima');
+
+        // Cek jika kategori adalah BUKAN PUTR (bersifat case-insensitive)
+        if (kategori && kategori.toUpperCase() === 'BUKAN PUTR') {
+            // Sembunyikan opsi Diterima
+            optionDiterima.style.display = 'none';
+
+            // Paksa pilih status menjadi Ditolak
+            statusSelect.value = 'Ditolak';
+
+            // Tampilkan kotak alasan penolakan secara otomatis
+            document.getElementById('alasanDiv').classList.remove('hidden');
+
+            // Beri placeholder otomatis agar admin tahu
+            const textareaAlasan = document.querySelector('textarea[name="alasan_penolakan"]');
+            if (textareaAlasan && !textareaAlasan.value) {
+                textareaAlasan.value = 'Pengaduan ditolak otomatis oleh sistem karena dikategorikan sebagai Bukan PUTR (di luar kewenangan dinas).';
+            }
+        } else {
+            // Tampilkan kembali opsi Diterima untuk kategori bidang normal (SDA, Jalan, dll)
+            optionDiterima.style.display = 'block';
+            statusSelect.value = 'Diterima';
+            document.getElementById('alasanDiv').classList.add('hidden');
+        }
+
         document.getElementById('verifModal').classList.remove('hidden');
     }
 
@@ -154,4 +181,42 @@
         `;
     }
 </script>
+@endpush
+
+@push('scripts')
+    <script src="{{ asset('js/sweetalert2.all.min.js') }}"></script>
+
+    {{-- SweetAlert2 Toast untuk Berhasil Edit Status/Kategori --}}
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: '{{ session('success') }}',
+                toast: true,
+                position: 'top',
+                showConfirmButton: false,
+                timer: 4000,
+                timerProgressBar: true,
+                color: '#166534'
+            });
+        </script>
+    @endif
+
+    {{-- SweetAlert2 Toast untuk Gagal / Error Validasi --}}
+    @if (session('error') || $errors->any())
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: '{{ session('error') ?? 'Terjadi kesalahan saat memperbarui status pengaduan.' }}',
+                toast: true,
+                position: 'top',
+                showConfirmButton: false,
+                timer: 4000,
+                timerProgressBar: true,
+                color: '#991b1b'
+            });
+        </script>
+    @endif
 @endpush

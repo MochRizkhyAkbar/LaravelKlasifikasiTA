@@ -63,7 +63,7 @@ class MasyarakatController extends Controller
             }elseif($aiResult['kategori_label'] == 'bidang Bina Kontruksi dan Teknik(Binkon)'){
                 $aiResult['kategori_label'] = 'bidangBINKON';
             }elseif($aiResult['kategori_label'] == 'bukan pupr'){
-                $aiResult['kategori_label'] = 'BUKAN PUPR';
+                $aiResult['kategori_label'] = 'BUKAN PUTR';
             }
 
 
