@@ -52,6 +52,8 @@
                 <tr>
                     <th class="px-6 py-4">NO</th>
                     <th class="px-6 py-4">WAKTU DAFTAR</th>
+                    <th class="px-6 py-4">NAMA</th>
+                    <th class="px-6 py-4" style="text-align: left !important;">NIP</th>
                     <th class="px-6 py-4">EMAIL</th>
                     <th class="px-6 py-4">ROLE</th>
                     <th class="px-6 py-4">STATUS</th>
@@ -62,8 +64,12 @@
                 @foreach($users as $index => $user)
                 <tr class="hover:bg-gray-50 transition">
                     <td class="px-6 py-4">{{ $index + 1 }}</td>
-                    <td class="px-6 py-4">{{ $user->created_at->format('d/M/Y') }}</td>
-                    <td class="px-6 py-4 font-medium text-gray-900">{{ $user->email }}</td>
+                    <td class="px-6 py-4">{{ $user->created_at ? $user->created_at->format('d/m/Y') : '-' }}</td>
+                    <!-- Nama tidak bold -->
+                    <td class="px-6 py-4 text-gray-900">{{ $user->name }}</td>
+                    <!-- NIP rata kiri seperti kolom lainnya -->
+                    <td class="px-6 py-4 text-gray-700" style="text-align: left !important;">{{ $user->nip ?? '-' }}</td>
+                    <td class="px-6 py-4 font-medium text-gray-700">{{ $user->email }}</td>
                     <td class="px-6 py-4">
                         @foreach($user->roles as $role)
                             <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">
@@ -84,7 +90,7 @@
                             </button>
 
                             <form action="{{ route('admin.user.destroy', $user->id) }}" method="POST"
-                                onsubmit="return confirm('Yakin ingin menghapus?')">
+                                  onsubmit="return confirm('Yakin ingin menghapus?')">
                                 @csrf @method('DELETE')
                                 <button type="submit"
                                         class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded text-xs transition">
@@ -109,6 +115,11 @@
 
                 <label class="block mb-1 text-sm font-semibold">Nama:</label>
                 <input type="text" name="name" value="{{ $user->name }}" class="w-full border p-2 mb-2 rounded" required>
+
+                <!-- Input NIP pada Modal Edit -->
+                <label class="block mb-1 text-sm font-semibold">NIP:</label>
+                <input type="text" name="nip" value="{{ $user->nip }}" class="w-full border p-2 mb-2 rounded" required>
+                @error('nip')<div class="text-red-400 text-xs mt-1">{{ $message }}</div>@enderror
 
                 <label class="block mb-1 text-sm font-semibold">Email:</label>
                 <input type="email" name="email" value="{{ $user->email }}" class="w-full border p-2 mb-2 rounded" required>
@@ -144,11 +155,14 @@
             <h2 class="text-xl font-bold mb-4">Tambah User Baru</h2>
             <form action="{{ route('admin.user.store') }}" method="POST">
                 @csrf
-                <input type="text" name="name" placeholder="Nama" class="w-full border p-2 mb-2 rounded" required>
+                <input type="text" name="name" placeholder="Nama Lengkap" class="w-full border p-2 mb-2 rounded" required>
+
+                <input type="text" name="nip" placeholder="Nomor Induk Pegawai (NIP)" class="w-full border p-2 mb-2 rounded" required>
+                @error('nip')<div class="text-red-400 text-xs mt-1">{{ $message }}</div>@enderror
+
                 <input type="email" name="email" placeholder="Email" class="w-full border p-2 mb-2 rounded" required>
                 @error('email')<div class="text-red-400 text-xs mt-1">{{ $message }}</div>@enderror
-                {{-- <input type="password" name="password" placeholder="Password" class="w-full border p-2 mb-2 rounded" required> --}}
-                @error('password')<div class="text-red-400 text-xs mt-1">{{ $message }}</div>@enderror
+
                 <label class="block text-sm font-semibold mt-2">Pilih Role:</label>
                 <select name="role" class="w-full border p-2 mb-2 rounded" required>
                     <option value="admin">Admin Dinas</option>
@@ -178,6 +192,7 @@
         if ($.fn.DataTable && !$.fn.DataTable.isDataTable('#tabelUser')) {
             $('#tabelUser').DataTable({
                 responsive: true,
+                order: [[0, 'asc']], // Urutkan default berdasarkan Kolom NO (indeks 0) dari terkecil
                 language: {
                     search: "Cari User:",
                     lengthMenu: "Tampilkan _MENU_ data",

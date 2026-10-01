@@ -33,6 +33,7 @@ class MasyarakatController extends Controller
         $request->validate([
             'nama_pelapor' => 'required|string|max:255',
             'no_wa'        => 'required|string|max:15',
+            'email'        => 'required|email|max:255',
             'isi_pengaduan' => 'required|string',
             'lokasi'       => 'required|string|max:255',
             'foto_bukti'   => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
@@ -50,7 +51,6 @@ class MasyarakatController extends Controller
 
 
             $aiResult = $response->json();
-
             // dd($aiResult['kategori_label']);
 
 
@@ -72,11 +72,13 @@ class MasyarakatController extends Controller
             $pengaduan = new Pengaduan();
             $pengaduan->nama_pelapor  = $request->nama_pelapor;
             $pengaduan->no_wa         = $request->no_wa;
+            $pengaduan->email        = $request->email;
             $pengaduan->isi_pengaduan = $request->isi_pengaduan;
             $pengaduan->lokasi        = $request->lokasi;
             $pengaduan->kode_pengaduan = $kode;
             $pengaduan->status        = 'Pending';
             $pengaduan->kategori_ai      = $aiResult['kategori_label'];
+            $pengaduan->confidence_score      = $aiResult['confidence_score'];
 
             if ($request->hasFile('foto_bukti')) {
                 $path = $request->file('foto_bukti')->store('bukti', 'public');

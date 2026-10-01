@@ -33,7 +33,7 @@ Route::middleware(['auth', 'verified', 'checkStatus'])->group(function () {
 
     // Rute Admin Dinas
     Route::middleware(['role:admin'])->prefix('admin-dinas')->group(function (){
-       Route::get('/dashboard', [App\Http\Controllers\AdminDinasController::class, 'dashboard'])->name('admin.dinas.dashboard');
+        Route::get('/dashboard', [App\Http\Controllers\AdminDinasController::class, 'dashboard'])->name('admin.dinas.dashboard');
         Route::get('/kelola', [AdminDinasController::class, 'index'])->name('admin_dinas.kelola');
 
         // Rute Manajemen User
@@ -42,8 +42,9 @@ Route::middleware(['auth', 'verified', 'checkStatus'])->group(function () {
         Route::put('/users/update/{id}', [ManajemenUserController::class, 'update'])->name('admin.user.update');
         Route::delete('/users/delete/{id}', [ManajemenUserController::class, 'destroy'])->name('admin.user.destroy');
 
-        // Fitur Kelola Pengaduan
+        // Fitur Kelola Pengaduan (Admin Dinas kini juga memproses alih kategori di sini)
         Route::get('/export-pdf', [AdminDinasController::class, 'exportPdf'])->name('admin_dinas.export.pdf');
+        Route::get('/export-excel', [AdminDinasController::class, 'exportExcel'])->name('admin_dinas.export.excel');
         Route::put('/update-status/{id}', [AdminDinasController::class, 'updateStatus'])->name('admin_dinas.update');
     });
 
@@ -52,7 +53,7 @@ Route::middleware(['auth', 'verified', 'checkStatus'])->group(function () {
         Route::get('/dashboard', [AdminBidangController::class, 'dashboard'])->name('admin.bidang.dashboard');
         Route::get('/tindaklanjuti', [AdminBidangController::class, 'index'])->name('admin_bidang.tindaklanjuti');
 
-        // Rute untuk update status/disposisi oleh Admin Bidang
+        // Rute untuk update status progres lapangan oleh Admin Bidang
         Route::put('/update/{id}', [AdminBidangController::class, 'update'])->name('admin_bidang.update');
     });
 

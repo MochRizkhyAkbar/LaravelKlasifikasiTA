@@ -15,19 +15,18 @@ class AdminBidangController extends Controller
         $user = User::find(Auth::id());
         $roleBidang = $user->getRoleNames()->first();
 
-        // Mengambil data termasuk status 'Selesai'
+        // Data hanya masuk ke admin bidang jika Admin Dinas sudah mengubah statusnya menjadi 'Diterima' (atau 'Diproses'/'Selesai')
         $pengaduans = Pengaduan::with('user')
             ->where('kategori_ai', $roleBidang)
-            ->whereIn('status', ['Pending', 'Diterima', 'Diproses', 'Didisposisikan', 'Dikembalikan', 'Selesai'])
+            ->whereIn('status', ['Diterima', 'Diproses', 'Didisposisikan', 'Selesai', 'Dikembalikan', 'Ditolak'])
             ->orderByRaw("
                 CASE
-                    WHEN status = 'Pending' THEN 1
-                    WHEN status = 'Dikembalikan' THEN 2
-                    WHEN status = 'Diterima' THEN 3
-                    WHEN status = 'Diproses' THEN 4
-                    WHEN status = 'Didisposisikan' THEN 5
-                    WHEN status = 'Selesai' THEN 6
-                    ELSE 7
+                    WHEN status = 'Diterima' THEN 1
+                    WHEN status = 'Diproses' THEN 2
+                    WHEN status = 'Didisposisikan' THEN 3
+                    WHEN status = 'Dikembalikan' THEN 4
+                    WHEN status = 'Selesai' THEN 5
+                    ELSE 6
                 END ASC
             ")
             ->orderBy('created_at', 'DESC')
@@ -42,12 +41,13 @@ class AdminBidangController extends Controller
         $roleBidang = $user->getRoleNames()->first();
         $query = Pengaduan::where('kategori_ai', $roleBidang);
 
-        // Statistik untuk Kartu
+        // Statistik untuk Kartu Dashboard (disesuaikan dengan key 'dikembalikan')
         $statistik = [
-            'diterima' => (clone $query)->where('status', 'Diterima')->count(),
-            'diproses' => (clone $query)->where('status', 'Diproses')->count(),
-            'selesai'  => (clone $query)->where('status', 'Selesai')->count(),
-            'dikembalikan'  => (clone $query)->where('status', 'Dikembalikan')->count(),
+            'diterima'     => (clone $query)->where('status', 'Diterima')->count(),
+            'diproses'     => (clone $query)->where('status', 'Diproses')->count(),
+            'selesai'      => (clone $query)->where('status', 'Selesai')->count(),
+            'dikembalikan' => (clone $query)->where('status', 'Dikembalikan')->count(),
+            'ditolak'      => (clone $query)->where('status', 'Ditolak')->count(),
         ];
 
         // 1. Data Grafik Per Tahun
@@ -80,13 +80,25 @@ class AdminBidangController extends Controller
     // Memproses update status/kategori oleh Admin Bidang
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'status' => 'nullable|in:Diterima,Diproses,Selesai,Dikembalikan,Tolak',
+            'catatan' => 'required_if:status,Tolak|required_if:status,Dikembalikan|nullable|string|max:500',
+            'kategori_baru' => 'nullable|string',
+        ], [
+            'catatan.required_if' => 'Catatan wajib diisi jika pengaduan dikembalikan atau ditolak untuk menjelaskan alasannya.'
+        ]);
+
         $pengaduan = Pengaduan::findOrFail($id);
 
         if ($request->filled('kategori_baru')) {
             $pengaduan->kategori_ai = $request->kategori_baru;
             $pengaduan->status = 'Didisposisikan';
         } else {
-            $pengaduan->status = $request->status;
+            if ($request->status === 'Tolak') {
+                $pengaduan->status = 'Ditolak';
+            } else {
+                $pengaduan->status = $request->status;
+            }
         }
 
         $pengaduan->catatan_bidang = $request->catatan;

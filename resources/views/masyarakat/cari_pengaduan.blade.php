@@ -73,6 +73,13 @@
                         </div>
                     </div>
 
+                    <!-- TAMBAHAN BARU: Kotak Isi Laporan Pengaduan -->
+                    <div class="p-4 bg-gray-50 border border-gray-200 rounded-xl">
+                        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">Isi Laporan Pengaduan</p>
+                        <p class="text-gray-700 text-sm leading-relaxed">{{ $pengaduan->isi_pengaduan }}</p>
+                    </div>
+
+                    <!-- Informasi Penolakan (Jika Ada) -->
                     @if($pengaduan->status == 'Ditolak' && !empty($pengaduan->alasan_penolakan))
                         <div class="p-5 bg-red-50 border border-red-200 rounded-xl">
                             <div class="flex items-center gap-2 text-red-800 font-bold mb-2">
@@ -82,6 +89,18 @@
                             <p class="text-red-700 text-sm leading-relaxed">{{ $pengaduan->alasan_penolakan }}</p>
                         </div>
                     @endif
+
+                    <!-- Catatan / Tindak Lanjut dari Admin Bidang -->
+                    @if(!empty($pengaduan->catatan_bidang))
+                        <div class="p-5 bg-blue-50 border border-blue-200 rounded-xl">
+                            <div class="flex items-center gap-2 text-blue-900 font-bold mb-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <span>Catatan / Tindak Lanjut Bidang</span>
+                            </div>
+                            <p class="text-blue-800 text-sm leading-relaxed">{{ $pengaduan->catatan_bidang }}</p>
+                        </div>
+                    @endif
+
                 </div>
             @endif
         </div>

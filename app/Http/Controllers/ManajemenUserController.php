@@ -26,6 +26,7 @@ class ManajemenUserController extends Controller
         // 1. Validasi
         $request->validate([
             'name' => 'required',
+            'nip' => 'required|string|max:50|unique:users,nip',
             'email' => 'required|email|unique:users,email',
             // 'password' => 'required|min:6',
             'role' => 'required',
@@ -36,6 +37,7 @@ class ManajemenUserController extends Controller
         // 2. Simpan ke database
         $user = User::create([
             'name' => $request->name,
+            'nip' => $request->nip,
             'email' => $request->email,
             'password' => Hash::make('Pass1234'),
             // 'password' => Hash::make($request->password), // Gunakan Hash::make agar lebih standar
@@ -61,6 +63,7 @@ class ManajemenUserController extends Controller
         } else {
             $request->validate([
                 'name' => 'required|string|max:255',
+                'nip' => 'required|string|max:50|unique:users,nip,' . $id, // <-- 1. Tambahkan validasi NIP di sini
                 'email' => 'required|email|unique:users,email,' . $id,
                 'role' => 'required',
                 'status' => 'required',
@@ -69,6 +72,7 @@ class ManajemenUserController extends Controller
 
             $data = [
                 'name' => $request->name,
+                'nip' => $request->nip, // <-- 2. Masukkan NIP ke array data yang akan di-update
                 'email' => $request->email,
                 'role' => $request->role,
                 'status' => $request->status,

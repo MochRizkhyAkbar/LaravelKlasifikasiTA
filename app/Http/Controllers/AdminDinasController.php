@@ -71,31 +71,21 @@ class AdminDinasController extends Controller
             $query->where('kategori_ai', $request->bidang);
         }
 
-        $pengaduans = $query->orderByRaw("
-            CASE
-                WHEN status = 'Pending' THEN 1
-                WHEN status = 'Dikembalikan' THEN 2
-                WHEN status = 'Diterima' THEN 3
-                WHEN status = 'Diproses' THEN 4
-                WHEN status = 'Didisposisikan' THEN 5
-                WHEN status = 'Selesai' THEN 6
-                ELSE 7
-            END ASC
-        ")
-        ->orderBy('created_at', 'DESC')
-        ->get();
+        // Diubah agar langsung mengurutkan berdasarkan tanggal terbaru di atas (DESC)
+        $pengaduans = $query->orderBy('created_at', 'DESC')->get();
 
         return view('admin_dinas.kelola_pengaduan', compact('pengaduans'));
     }
 
     /**
-     * 3. Memproses pengubahan status pengaduan
+     * 3. Memproses pengubahan status dan alih kategori pengaduan
      */
     public function updateStatus(Request $request, $id)
     {
         $request->validate([
             'status' => 'required|in:Diterima,Ditolak',
             'alasan_penolakan' => 'required_if:status,Ditolak|nullable|string|max:500',
+            'kategori_baru' => 'nullable|string', // Validasi untuk pilihan alih kategori
         ]);
 
         $pengaduan = Pengaduan::findOrFail($id);
@@ -105,10 +95,15 @@ class AdminDinasController extends Controller
             $pengaduan->alasan_penolakan = $request->alasan_penolakan;
         } else {
             $pengaduan->alasan_penolakan = null;
+
+            // Jika status diterima dan admin memilih kategori baru (bukan Tetap/kosong), ubah kategori_ai nya
+            if ($request->filled('kategori_baru') && $request->kategori_baru !== 'Tetap') {
+                $pengaduan->kategori_ai = $request->kategori_baru;
+            }
         }
 
         $pengaduan->save();
-        return redirect()->back()->with('success', 'Status pengaduan berhasil diperbarui!');
+        return redirect()->back()->with('success', 'Status dan kategori pengaduan berhasil diperbarui!');
     }
 
     /**
@@ -120,7 +115,7 @@ class AdminDinasController extends Controller
         if ($request->has('bidang') && $request->bidang != '') {
             $query->where('kategori_ai', $request->bidang);
         }
-        $data = $query->get();
+        $data = $query->orderBy('created_at', 'DESC')->get();
 
         if ($data->isEmpty()) {
             return redirect()->back()->with('error', 'Tidak ada data untuk diekspor!');
@@ -131,7 +126,57 @@ class AdminDinasController extends Controller
     }
 
     /**
-     * 5. Mengarah ke manajemen user
+     * 5. Menghasilkan file Excel (.xls)
+     */
+    public function exportExcel(Request $request)
+    {
+        $query = Pengaduan::query();
+        if ($request->has('bidang') && $request->bidang != '') {
+            $query->where('kategori_ai', $request->bidang);
+        }
+        $data = $query->orderBy('created_at', 'DESC')->get();
+
+        if ($data->isEmpty()) {
+            return redirect()->back()->with('error', 'Tidak ada data untuk diekspor!');
+        }
+
+        $fileName = 'Laporan_Pengaduan_PUTR_' . date('d-m-Y') . '.xls';
+
+        $headers = [
+            "Content-type" => "application/vnd.ms-excel",
+            "Content-Disposition" => "attachment; filename=$fileName",
+            "Pragma" => "no-cache",
+            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+            "Expires" => "0"
+        ];
+
+        $callback = function() use($data) {
+            $file = fopen('php://output', 'w');
+            // Header kolom tabel Excel
+            fputcsv($file, ['No', 'Kode Pengaduan', 'Tanggal', 'Nama Pelapor', 'No WhatsApp', 'Email', 'Lokasi', 'Isi Aduan', 'Kategori', 'Status'], "\t");
+
+            foreach ($data as $index => $item) {
+                fputcsv($file, [
+                    $index + 1,
+                    $item->kode_pengaduan,
+                    $item->created_at->format('d-m-Y'),
+                    $item->nama_pelapor,
+                    $item->no_wa,
+                    $item->email,
+                    $item->lokasi,
+                    $item->isi_pengaduan,
+                    $item->kategori_ai,
+                    $item->status
+                ], "\t");
+            }
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    /**
+     * 6. Mengarah ke manajemen user
      */
     public function manajemenUser()
     {

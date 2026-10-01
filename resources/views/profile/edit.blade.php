@@ -8,9 +8,9 @@
     </div>
 
     <div class="space-y-6">
-        <div class="p-8 bg-white shadow-sm border-t-4 border-blue-900 rounded-xl">
+        {{-- <div class="p-8 bg-white shadow-sm border-t-4 border-blue-900 rounded-xl">
             @include('profile.partials.update-profile-information-form')
-        </div>
+        </div> --}}
 
         <div class="p-8 bg-white shadow-sm border-t-4 border-blue-900 rounded-xl">
             @include('profile.partials.update-password-form')

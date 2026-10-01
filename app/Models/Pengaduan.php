@@ -9,6 +9,7 @@ class Pengaduan extends Model
     protected $fillable = [
         'nama_pelapor',
         'no_wa',
+        'email',
         'isi_pengaduan',
         'lokasi',
         'foto_bukti',

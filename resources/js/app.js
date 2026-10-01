@@ -70,8 +70,8 @@ $(document).ready(function () {
             order: [],
             columnDefs: [
                 {
-                    "targets": 6,
-                    "orderable": false
+                    "targets": 7,
+                    "orderable": true
                 }
             ],
             language: {

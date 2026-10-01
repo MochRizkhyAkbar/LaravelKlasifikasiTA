@@ -49,23 +49,31 @@
 
         <!-- Kalimat Ajakan -->
         <div class="mb-8 text-center">
-            <h2 class="text-3xl font-bold text-blue-900 mb-2">Laporkan Kerusakan Infrastruktur</h2>
-            <p class="text-gray-600">Mari bantu membangun Cianjur yang lebih baik. Silakan masukkan detail pengaduan Anda di bawah ini dengan lengkap dan benar.</p>
+            <h2 class="text-3xl font-bold text-blue-900 mb-2">Laporkan Kerusakan Infrastruktur dan Tata Ruang</h2>
+            <p class="text-gray-600">Mari bantu membangun Cianjur yang lebih baik. Silakan masukkan detail pengaduan Anda di bawah ini dengan baik dan benar.</p>
         </div>
 
         <div class="bg-white p-8 rounded-xl shadow-lg border-t-4 border-blue-900">
             <form action="{{ route('pengaduan.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {{-- Nama Lengkap --}}
-                    <div>
-                        <label class="block font-semibold mb-2">Nama Lengkap <span class="text-red-500"></span></label>
-                        <input type="text" name="nama_pelapor" placeholder="Masukkan nama lengkap anda" class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500" required>
+                    <!-- Baris 1: Nama Lengkap & No WhatsApp (2 Kolom) -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
+                            <input type="text" name="nama_pelapor" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2.5 border" placeholder="Masukkan nama lengkap anda" required>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">No WhatsApp</label>
+                            <input type="text" name="no_wa" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2.5 border" placeholder="Masukkan nomor WhatsApp anda" required>
+                        </div>
                     </div>
-                    {{-- No WhatsApp --}}
-                    <div>
-                        <label class="block font-semibold mb-2">No WhatsApp <span class="text-red-500"></span></label>
-                        <input type="text" name="no_wa" placeholder="Masukkan nomor WhatsApp anda" class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500" required>
+
+                    <!-- Baris 2: Email (DI LUAR GRID - otomatis melebar penuh ke kanan) -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <input type="email" name="email" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2.5 border" placeholder="Masukkan alamat email aktif anda" required>
                     </div>
                     {{-- Isi Laporan --}}
                     <div class="md:col-span-2">
